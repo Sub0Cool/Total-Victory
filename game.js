@@ -3,10 +3,10 @@ const COLS = 12;
 const HOLD_TURNS_TO_WIN = 3;
 
 const unitTypes = {
-  infantry: { name: 'Infantry', icon: 'I', move: 3, range: 1, attack: 4, maxHp: 10 },
-  tank: { name: 'Tank', icon: 'T', move: 4, range: 1, attack: 6, maxHp: 12 },
-  artillery: { name: 'Artillery', icon: 'A', move: 2, range: 3, minRange: 2, attack: 5, maxHp: 8 },
-  recon: { name: 'Recon', icon: 'R', move: 5, range: 1, attack: 3, maxHp: 8 },
+  infantry: { name: 'Infantry', move: 3, range: 1, attack: 4, maxHp: 10 },
+  tank: { name: 'Tank', move: 4, range: 1, attack: 6, maxHp: 12 },
+  artillery: { name: 'Artillery', move: 2, range: 3, minRange: 2, attack: 5, maxHp: 8 },
+  recon: { name: 'Recon', move: 5, range: 1, attack: 3, maxHp: 8 },
 };
 
 const terrain = Array.from({ length: ROWS }, (_, r) =>
@@ -103,6 +103,60 @@ function log(message) {
   logEl.prepend(p);
 }
 
+function getUnitSymbolSvg(type) {
+  if (type === 'infantry') {
+    return `
+      <svg viewBox="0 0 64 40" class="symbol-svg" aria-hidden="true">
+        <line x1="12" y1="8" x2="52" y2="32"></line>
+        <line x1="52" y1="8" x2="12" y2="32"></line>
+      </svg>`;
+  }
+
+  if (type === 'tank') {
+    return `
+      <svg viewBox="0 0 64 40" class="symbol-svg" aria-hidden="true">
+        <ellipse cx="32" cy="20" rx="18" ry="10"></ellipse>
+      </svg>`;
+  }
+
+  if (type === 'artillery') {
+    return `
+      <svg viewBox="0 0 64 40" class="symbol-svg" aria-hidden="true">
+        <circle cx="32" cy="20" r="6"></circle>
+      </svg>`;
+  }
+
+  if (type === 'recon') {
+    return `
+      <svg viewBox="0 0 64 40" class="symbol-svg" aria-hidden="true">
+        <line x1="18" y1="10" x2="32" y2="20"></line>
+        <line x1="32" y1="20" x2="18" y2="30"></line>
+        <line x1="32" y1="20" x2="46" y2="10"></line>
+        <line x1="32" y1="20" x2="46" y2="30"></line>
+        <circle cx="32" cy="20" r="2.5" fill="currentColor" stroke="none"></circle>
+      </svg>`;
+  }
+
+  return '';
+}
+
+function buildUnitCounter(unit) {
+  const t = unitTypes[unit.type];
+  const token = document.createElement('div');
+  token.className = `unit ${unit.side} ${unit.type}${unit.acted ? ' spent' : ''}`;
+  token.title = `${t.name} — ${unit.hp} HP`;
+
+  token.innerHTML = `
+    <div class="unit-top">${t.name}</div>
+    <div class="unit-face">
+      ${getUnitSymbolSvg(unit.type)}
+    </div>
+    <span class="hp">${unit.hp}</span>
+  `;
+
+  return token;
+}
+
 function render() {
   boardEl.innerHTML = '';
   const selected = selectedUnit();
@@ -126,15 +180,7 @@ function render() {
       }
 
       if (occupying) {
-        const token = document.createElement('div');
-        token.className = `unit ${occupying.side}${occupying.acted ? ' spent' : ''}`;
-        token.title = `${unitTypes[occupying.type].name} — ${occupying.hp} HP`;
-        token.textContent = unitTypes[occupying.type].icon;
-        const hp = document.createElement('span');
-        hp.className = 'hp';
-        hp.textContent = occupying.hp;
-        token.appendChild(hp);
-        tile.appendChild(token);
+        tile.appendChild(buildUnitCounter(occupying));
       }
 
       tile.addEventListener('click', onTileClick);
