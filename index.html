@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Frontline Command</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <h1>Frontline Command</h1>
+        <p class="subtitle">Capture the central objective and hold it for 3 turns.</p>
+      </div>
+      <div class="turn-card">
+        <div id="turnLabel">Turn 1 — Blue Force</div>
+        <div id="objectiveLabel">Objective hold: 0 / 3</div>
+      </div>
+    </header>
+
+    <section class="layout">
+      <div class="board-wrap">
+        <div id="board" class="board" aria-label="Battlefield"></div>
+      </div>
+
+      <aside class="panel">
+        <section>
+          <h2>Selected Unit</h2>
+          <div id="unitDetails" class="details muted">Select one of your units.</div>
+        </section>
+
+        <section>
+          <h2>Orders</h2>
+          <div class="button-stack">
+            <button id="moveBtn" type="button" disabled>Move</button>
+            <button id="attackBtn" type="button" disabled>Attack</button>
+            <button id="waitBtn" type="button" disabled>Wait</button>
+            <button id="endTurnBtn" type="button">End Turn</button>
+          </div>
+        </section>
+
+        <section>
+          <h2>Battle Log</h2>
+          <div id="log" class="log" aria-live="polite"></div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
